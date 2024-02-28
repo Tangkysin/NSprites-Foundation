@@ -47,21 +47,21 @@ namespace NSprites
         }
 
 #if UNITY_EDITOR
-        [MenuItem("NSprites/Toggle frustum culling system")]
-        public static void ToggleFrustumCullingSystem()
-        {
-            var systemHandle = World.DefaultGameObjectInjectionWorld.GetExistingSystem<SpriteFrustumCullingSystem>();
-
-            if (systemHandle == SystemHandle.Null)
-                return;
-
-            ref var systemState = ref World.DefaultGameObjectInjectionWorld.Unmanaged.ResolveSystemStateRef(systemHandle);
-
-            systemState.Enabled = !systemState.Enabled;
-
-            if (!systemState.Enabled)
-                systemState.EntityManager.RemoveComponent(systemState.GetEntityQuery(typeof(CullSpriteTag)), ComponentType.ReadOnly<CullSpriteTag>());
-        }
+        // [MenuItem("NSprites/Toggle frustum culling system")]
+        // public static void ToggleFrustumCullingSystem()
+        // {
+        //     var systemHandle = World.DefaultGameObjectInjectionWorld.GetExistingSystem<SpriteFrustumCullingSystem>();
+        //
+        //     if (systemHandle == SystemHandle.Null)
+        //         return;
+        //
+        //     ref var systemState = ref World.DefaultGameObjectInjectionWorld.Unmanaged.ResolveSystemStateRef(systemHandle);
+        //
+        //     systemState.Enabled = !systemState.Enabled;
+        //
+        //     if (!systemState.Enabled)
+        //         systemState.EntityManager.RemoveComponent(systemState.GetEntityQuery(typeof(CullSpriteTag)), ComponentType.ReadOnly<CullSpriteTag>());
+        // }
 #endif
 
         [BurstCompile]
@@ -74,24 +74,24 @@ namespace NSprites
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
-            var cullingBounds2D = SystemAPI.GetComponent<CameraData>(state.SystemHandle).CullingBounds2D;
-
-            var disableCulledJob = new DisableCulledJob
-            {
-                EntityCommandBuffer = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter(),
-                CameraBounds2D = cullingBounds2D
-            };
-            var disableCulledHandle = disableCulledJob.ScheduleParallelByRef(state.Dependency);
-            
-            var enableUnculledJob = new EnableUnculledJob
-            {
-                EntityCommandBuffer = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter(),
-                CameraBounds2D = cullingBounds2D
-            };
-            var enableUnculledHandle = enableUnculledJob.ScheduleParallelByRef(state.Dependency);
-            
-            state.Dependency = JobHandle.CombineDependencies(disableCulledHandle, enableUnculledHandle);
+            // var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
+            // var cullingBounds2D = SystemAPI.GetComponent<CameraData>(state.SystemHandle).CullingBounds2D;
+            //
+            // var disableCulledJob = new DisableCulledJob
+            // {
+            //     EntityCommandBuffer = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter(),
+            //     CameraBounds2D = cullingBounds2D
+            // };
+            // var disableCulledHandle = disableCulledJob.ScheduleParallelByRef(state.Dependency);
+            //
+            // var enableUnculledJob = new EnableUnculledJob
+            // {
+            //     EntityCommandBuffer = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter(),
+            //     CameraBounds2D = cullingBounds2D
+            // };
+            // var enableUnculledHandle = enableUnculledJob.ScheduleParallelByRef(state.Dependency);
+            //
+            // state.Dependency = JobHandle.CombineDependencies(disableCulledHandle, enableUnculledHandle);
         }
     }
 }
